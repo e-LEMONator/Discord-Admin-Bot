@@ -1,5 +1,8 @@
-﻿using DSharpPlus;
+﻿using Discord_Admin_Bot.Commands;
+using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Discord_Admin_Bot
@@ -16,14 +19,12 @@ namespace Discord_Admin_Bot
                 Intents = DiscordIntents.AllUnprivileged
             });
 
-            discord.MessageCreated += async (s, e) =>
+            var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
             {
-                if (e.Message.Content.ToLower().StartsWith("ping") && e.Channel.Id == 842912267925848094)
-                {
-                    await e.Message.RespondAsync("pong!");
-                }
-                //if (e.Message.Content.ToLower().StartsWith("ping"))                    
-            };
+                StringPrefixes = new[] { "!" }
+            });
+
+            commands.RegisterCommands(Assembly.GetExecutingAssembly());
 
             await discord.ConnectAsync();
             await Task.Delay(-1);
